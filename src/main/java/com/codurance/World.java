@@ -21,9 +21,9 @@ public class World {
     }
 
     private void determineIfCellCanSurvuve() {
-        population.stream().filter(cell -> cell.notEmpty()).forEach(cell -> {
+        population.stream().filter(cell -> cell.isNotEmpty()).forEach(cell -> {
             if (!grid.checkCellCanSurvive(cell, population)) {
-                cell.dead();
+                cell.die();
             }
         });
     }
