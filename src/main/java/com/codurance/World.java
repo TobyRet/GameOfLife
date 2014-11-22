@@ -17,25 +17,14 @@ public class World {
     }
 
     public void tick() {
-//        killCellsIfPopulationTooLow();
-        killCellIfItDoesNotHaveLivingNeighbours();
+        determineIfCellCanSurvuve();
     }
 
-    private void killCellIfItDoesNotHaveLivingNeighbours() {
-        for(Cell cell : population) {
-            if(cell.notEmpty()) {
-                if(!grid.checkCellHasLivingNeighbours(cell, population)){
-                    cell.dead();
-                }
-            }
-        }
-    }
-
-    private void killCellsIfPopulationTooLow() {
-        if(population.size() == 1 || population.size() == 2) {
-            for(Cell cell : population) {
+    private void determineIfCellCanSurvuve() {
+        population.stream().filter(cell -> cell.notEmpty()).forEach(cell -> {
+            if (!grid.checkCellCanSurvive(cell, population)) {
                 cell.dead();
             }
-        }
+        });
     }
 }

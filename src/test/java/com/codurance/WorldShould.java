@@ -35,7 +35,7 @@ public class WorldShould {
         createCells(1);
         world = new World(initialPopulation, grid);
         given(cell.notEmpty()).willReturn(true);
-        given(grid.checkCellHasLivingNeighbours(cell, world.getPopulation())).willReturn(false);
+        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(false);
         world.tick();
         verify(cell,times(1)).dead();
     }
@@ -45,7 +45,7 @@ public class WorldShould {
         createCells(4);
         world = new World(initialPopulation, grid);
         given(cell.notEmpty()).willReturn(true, true, true, false);
-        given(grid.checkCellHasLivingNeighbours(cell, world.getPopulation())).willReturn(true, true, true);
+        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(true, true, true);
         world.tick();
         assertThat(world.getPopulation(), is(initialPopulation));
     }
@@ -55,13 +55,27 @@ public class WorldShould {
         createCells(9);
         world = new World(initialPopulation, grid);
         given(cell.notEmpty()).willReturn(true, true, true, false, false, false, false, false, false);
-        given(grid.checkCellHasLivingNeighbours(cell, world.getPopulation())).willReturn(false, false, false);
+        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(false, false, false);
         world.tick();
         verify(cell, times(3)).dead();
     }
 
-    private void createCells(int number) {
+    @Test public void
+    living_cell_does_not_live_to_the_next_generation_if_it_has_more_than_two_neighbours() {
+        createCells(4);
+        world = new World(initialPopulation, grid);
+        given(cell.notEmpty()).willReturn(true, true, true, true);
+        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(false, false, false, false);
+        world.tick();
+        verify(cell, times(4)).dead();
+    }
 
+    @Test public void
+    dead_cell_can_live_in_the_next_generation_if_it_has_three_neighbours() {
+        assertThat(, is());
+    }
+
+    private void createCells(int number) {
         initialPopulation = new ArrayList<>();
         for(int i=0; i<number; i++) {
             initialPopulation.add(cell);
