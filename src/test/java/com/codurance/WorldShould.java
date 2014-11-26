@@ -16,32 +16,23 @@ import static org.mockito.BDDMockito.given;
 public class WorldShould {
 
     private World world;
-    private List<Cell> initialPopulation;
     @Mock Grid grid;
+    @Mock Cell cell;
+    @Mock LivingCells livingCells;
 
     @Test public void
-    should_be_empty_when_initialised() {
-        List<Cell> initialPopulation = new ArrayList<>();
-        world = new World(initialPopulation, grid);
-        assertThat(world.getPopulation().size(), is(0));
-    }
+    should_have_a_population_of_zero_if_initialised_with_one_living_cell() {
+        List<Cell> livingCells = new ArrayList();
+        livingCells.add(cell);
 
-    @Test public void
-    have_one_dead_cell_if_initial_population_is_one_living_cell() {
-        initialPopulation = new ArrayList<>();
-        Cell livingCell = new Cell("alive");
-        initialPopulation.add(livingCell);
-        world = new World(initialPopulation, grid);
+        List<Cell> nextGeneration = new ArrayList();
 
-        livingCell.die();
+        world  = new World(livingCells, grid);
 
-        List<Cell> nextGeneration = new ArrayList<>();
-        nextGeneration.add(livingCell);
-
-        given(grid.returnNextGeneration(initialPopulation)).willReturn(nextGeneration);
+        given(grid.returnNextGeneration(livingCells)).willReturn(nextGeneration);
 
         world.tick();
 
-        assertThat(world.getPopulation().get(0).isDead(), is(true));
+        assertThat(world.getPopulation().isEmpty(), is(true));
     }
 }
