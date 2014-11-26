@@ -11,8 +11,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.anyList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorldShould {
@@ -20,7 +19,6 @@ public class WorldShould {
     private World world;
     private List<Cell> initialPopulation;
     @Mock Grid grid;
-    @Mock Cell cell;
 
     @Test public void
     should_be_empty_when_initialised() {
@@ -29,59 +27,17 @@ public class WorldShould {
         assertThat(world.getPopulation().size(), is(0));
     }
 
-
     @Test public void
-    kill_cell_if_initial_population_size_is_1() {
-        createCells(1);
-        world = new World(initialPopulation, grid);
-        given(cell.isNotEmpty()).willReturn(true);
-        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(false);
-        world.tick();
-        verify(cell,times(1)).die();
-    }
-
-    @Test public void
-    cell_lives_to_next_generation_if_it_has_two_living_neighbours() {
-        createCells(4);
-        world = new World(initialPopulation, grid);
-        given(cell.isNotEmpty()).willReturn(true, true, true, false);
-        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(true, true, true);
-        world.tick();
-        assertThat(world.getPopulation(), is(initialPopulation));
-    }
-
-    @Test public void
-    cell_does_not_live_to_the_next_generation_if_it_does_not_have_two_living_neighbours() {
-        createCells(9);
-        world = new World(initialPopulation, grid);
-        given(cell.isNotEmpty()).willReturn(true, true, true, false, false, false, false, false, false);
-        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(false, false, false);
-        world.tick();
-        verify(cell, times(3)).die();
-    }
-
-    @Test public void
-    living_cell_does_not_live_to_the_next_generation_if_it_has_more_than_two_neighbours() {
-        createCells(4);
-        world = new World(initialPopulation, grid);
-        given(cell.isNotEmpty()).willReturn(true, true, true, true);
-        given(grid.checkCellCanSurvive(cell, world.getPopulation())).willReturn(false, false, false, false);
-        world.tick();
-        verify(cell, times(4)).die();
-    }
-
-//    @Test public void
-//    dead_cell_can_live_in_the_next_generation_if_it_has_three_neighbours() {
-//        createCells(4);
-//        world = new World(initialPopulation, grid);
-//        given(cell.isNotEmpty()).willReturn(true, true, true, true);
-//    }
-
-    private void createCells(int number) {
+    be_empty_if_initial_population_is_one_living_cell() {
         initialPopulation = new ArrayList<>();
-        for(int i=0; i<number; i++) {
-            initialPopulation.add(cell);
-        }
-    }
+        Cell livingCell = new Cell("alive");
+        initialPopulation.add(livingCell);
+        world = new World(initialPopulation, grid);
 
+        given(grid.returnNextGeneration(initialPopulation)).willReturn(anyList());
+
+        world.tick();
+
+        assertThat(world.getPopulation().isEmpty(), is(true));
+    }
 }

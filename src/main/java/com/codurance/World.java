@@ -17,14 +17,7 @@ public class World {
     }
 
     public void tick() {
-        determineIfCellCanSurvuve();
+        population = grid.returnNextGeneration(population);
     }
 
-    private void determineIfCellCanSurvuve() {
-        population.stream().filter(cell -> cell.isNotEmpty()).forEach(cell -> {
-            if (!grid.checkCellCanSurvive(cell, population)) {
-                cell.die();
-            }
-        });
-    }
 }
