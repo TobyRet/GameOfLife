@@ -1,5 +1,7 @@
 package com.codurance;
 
+import java.util.List;
+
 public class Cell {
 
     private String status;
@@ -8,8 +10,9 @@ public class Cell {
         this.status = status;
     }
 
-    public void die() {
+    public List<Cell> die() {
         status = "dead";
+        return null;
     }
 
     public void live() {

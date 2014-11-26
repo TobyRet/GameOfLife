@@ -5,10 +5,8 @@ import java.util.List;
 public class Grid {
 
     public List<Cell> returnNextGeneration(List<Cell> population) {
-        return null;
+        return population;
     }
 
-    public boolean checkCellCanSurvive(Cell cell, List<Cell> population) {
-        return false;
-    }
+
 }

@@ -11,7 +11,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorldShould {
@@ -28,16 +27,21 @@ public class WorldShould {
     }
 
     @Test public void
-    be_empty_if_initial_population_is_one_living_cell() {
+    have_one_dead_cell_if_initial_population_is_one_living_cell() {
         initialPopulation = new ArrayList<>();
         Cell livingCell = new Cell("alive");
         initialPopulation.add(livingCell);
         world = new World(initialPopulation, grid);
 
-        given(grid.returnNextGeneration(initialPopulation)).willReturn(anyList());
+        livingCell.die();
+
+        List<Cell> nextGeneration = new ArrayList<>();
+        nextGeneration.add(livingCell);
+
+        given(grid.returnNextGeneration(initialPopulation)).willReturn(nextGeneration);
 
         world.tick();
 
-        assertThat(world.getPopulation().isEmpty(), is(true));
+        assertThat(world.getPopulation().get(0).isDead(), is(true));
     }
 }
