@@ -1,4 +1,5 @@
 package com.codurance;
 
-public class Cell {
+public interface Cell {
+    Coordinates getCoordinates();
 }
