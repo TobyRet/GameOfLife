@@ -5,7 +5,12 @@ import java.util.List;
 
 public class World {
 
-    List<Position> livingCellPositions = new ArrayList<>();
+    private List<Position> livingCellPositions = new ArrayList<>();
+    private Grid grid;
+
+    public World(Grid grid) {
+        this.grid = grid;
+    }
 
     public boolean isEmpty() {
         return livingCellPositions.isEmpty();
@@ -18,5 +23,9 @@ public class World {
     public boolean isAliveAt(Position position) {
         return livingCellPositions.stream()
                                         .anyMatch(livingCell -> livingCell.equals(position));
+    }
+
+    public void tick() {
+        livingCellPositions = grid.getNextGeneration(livingCellPositions);
     }
 }
