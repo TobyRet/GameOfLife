@@ -1,6 +1,5 @@
 package com.codurance;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -9,44 +8,53 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorldShould {
 
     private World world;
-    private Coordinates mockedCoordinateObject;
-
-    @Before
-    public void initialise() {
-        world = World.empty();
-    }
+    private Coordinates coordinates;
 
     @Test public void
     be_empty_when_created() {
+        CellLocations cellLocations = new CellLocations();
+        Population population = new Population();
+
+        world = new World(cellLocations, population);
         assertThat(world.isEmpty(), is(true));
     }
 
     @Test public void
-    be_empty_in_next_generation() {
-        world.tick();
-        assertThat(world.isEmpty(), is(true));
-    }
-
-    @Test public void
-    can_create_living_cells() {
-        mockedCoordinateObject = mock(Coordinates.class);
+    create_living_cells() {
         CellLocations cellLocations = mock(CellLocations.class);
+        Population population = new Population();
 
-        given(cellLocations.hasLivingCell(mockedCoordinateObject)).willReturn(true);
+        world = new World(cellLocations, population);
 
-        World world = new World(cellLocations);
+        coordinates = new Coordinates(3,3);
+        world.createLivingCell(coordinates);
 
-        world.createLivingCell(mockedCoordinateObject);
+        verify(cellLocations).add(coordinates);
+        given(cellLocations.hasLivingCell(coordinates)).willReturn(true);
 
         assertThat(world.isEmpty(), is(false));
-        assertThat(world.hasLivingCell(mockedCoordinateObject), is(true));
+        assertThat(world.hasLivingCell(coordinates), is(true));
     }
 
-    
+    @Test public void
+    regenerate_the_population() {
+        CellLocations cellLocations = mock(CellLocations.class);
+        Population population = mock(Population.class);
+
+        given(population.isEmpty()).willReturn(true);
+
+        world = new World(cellLocations, population);
+        world.createLivingCell(coordinates);
+
+        world.tick();
+
+        assertThat(world.isEmpty(), is(true));
+    }
 
 }

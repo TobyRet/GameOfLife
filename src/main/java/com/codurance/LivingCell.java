@@ -11,4 +11,9 @@ public class LivingCell implements Cell {
     public Coordinates getCoordinates() {
         return coordinates;
     }
+
+    @Override
+    public boolean canSurvive() {
+        return true;
+    }
 }

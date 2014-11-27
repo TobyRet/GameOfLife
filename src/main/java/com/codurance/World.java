@@ -1,33 +1,27 @@
 package com.codurance;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class World {
 
-    private List<Cell> population = new ArrayList<>();
+    private Population population;
     private CellLocations cellLocations;
 
-    public static World empty() {
-        CellLocations cellLocations = new CellLocations();
-        return new World(cellLocations);
-    }
-
-    public World(CellLocations cellLocations) {
+    public World(CellLocations cellLocations, Population population) {
         this.cellLocations = cellLocations;
+        this.population = population;
     }
 
     public boolean isEmpty() {
-        return population.size() == 0;
+        return population.isEmpty();
     }
 
     public void tick() {
-
+        population.regenerate();
     }
 
     public void createLivingCell(Coordinates coordinates) {
         LivingCell livingCell = new LivingCell(coordinates);
         population.add(livingCell);
+        cellLocations.add(coordinates);
     }
 
     public boolean hasLivingCell(Coordinates coordinates) {
